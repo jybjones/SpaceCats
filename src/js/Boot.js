@@ -6,27 +6,29 @@ SpaceCats.Boot.prototype = {
   preload: function(){
     this.load.image('logo', 'images/logo.png');
     console.log(' Boot', "awesomeTHIS")
-    this.load.image('preloadbar', 'images/glowingloadingbar.png');
+    this.load.image('preloadbar', 'images/preloader-bar.png');
   },
   create: function() {
     this.game.stage.backgroundColor = '#FFF';
+    this.input.maxPointers = 1;
+    this.input.addPointer();
 
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-  this.scale.minWidth = 240;
-  this.scale.minHeight = 170;
-  this.scale.maxWidth = 2880;
-  this.scale.maxHeight = 1920;
+    this.scale.minWidth = 240;
+    this.scale.minHeight = 170;
+    this.scale.maxWidth = 2880;
+    this.scale.maxHeight = 1920;
 
-  //have the game centered horizontally
-  this.scale.pageAlignHorizontally = true;
-  this.scale.pageAlignVertically = true;
+    //have the game centered horizontally
+    this.scale.pageAlignHorizontally = true;
+    this.scale.pageAlignVertically = true;
 
-  //screen size will be set automatically
-  this.scale.setScreenSize(true);
+    //screen size will be set automatically
+    this.scale.setScreenSize(true);
 
-  //physics system for movement
-  this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    //physics system for movement
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
     this.state.start('Preload');
-  }
-};
+    }
+  };
