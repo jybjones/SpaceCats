@@ -10,12 +10,13 @@ SpaceCats.Boot.prototype = {
   },
   create: function() {
     this.game.stage.backgroundColor = '#FFF';
-    this.input.maxPointers = 1;
     this.input.addPointer();
+    this.input.maxPointers = 1;
+    this.stage.disableVisibilityChange = false;
 
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.minWidth = 240;
-    this.scale.minHeight = 170;
+    this.scale.minHeight = 470;
     this.scale.maxWidth = 2880;
     this.scale.maxHeight = 1920;
 
