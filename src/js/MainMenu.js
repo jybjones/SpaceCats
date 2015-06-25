@@ -1,5 +1,5 @@
 var SpaceCats = SpaceCats || {};
-SpaceCats.MainMenu = function(){};
+SpaceCats.MainMenu = function(game){};
 
 SpaceCats.MainMenu.prototype = {
   init: function(score) {
@@ -20,7 +20,7 @@ SpaceCats.MainMenu.prototype = {
     t.anchor.set(0.5);
 
     //highest score
-    text = "Highest score: "+this.highestScore;
+    text = "Highest score: "+ this.highestScore;
     style = { font: "30px Arial", fill: "#fff", align: "center" };
 
     var h = this.game.add.text(this.game.width/2, this.game.height/2 + 50, text, style);
@@ -29,7 +29,8 @@ SpaceCats.MainMenu.prototype = {
   //////////press to START/////////////////
   update: function() {
     if(this.game.input.activePointer.justPressed()) {
-      this.game.state.start('Game');
+      this.game.state.start('Game', 'explodeBig');
+
     }
   }
 };

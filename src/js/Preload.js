@@ -1,5 +1,5 @@
 var SpaceCats = SpaceCats || {};
-SpaceCats.Preload = function(){
+SpaceCats.Preload = function(game){
   this.preloadBar = null;
   this.logo = null;
   this.ready = false;
@@ -22,6 +22,9 @@ SpaceCats.Preload.prototype = {
     this.load.image('sparklebutt', 'images/sparklebutt2.png');
     this.load.image('lazers', 'images/lazer-eyes.png');
     this.load.spritesheet('explosion', 'images/explosion.png');
+    // this.load.spritesheet('purpleweed', 'images/purpleweed.png');
+    this.load.spritesheet('prettyLaserball', 'images/prettyLaserball.png');
+    this.load.spritesheet('explosionBig', 'images/explodeBig.png');
     this.load.atlasXML('bunny', 'images/bunny.png', 'images/bunny.xml');
     this.load.atlasXML('spacerock', 'images/SpaceRock.png', 'images/SpaceRock.xml');
     // this.load.audio('collect', 'assets/audio/collect.ogg');

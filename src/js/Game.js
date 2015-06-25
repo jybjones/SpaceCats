@@ -1,6 +1,7 @@
 var SpaceCats = SpaceCats || {};
 SpaceCats.Game = function(game){
-  this.player
+  this.player;
+  // this._player = null;
   this.burst; ///explosition particles
   this.gameover;
   this.maxSpeed = 600;
@@ -20,6 +21,9 @@ SpaceCats.Game = function(game){
 
 SpaceCats.Game.prototype = {
 create: function() {
+    this.physics.startSystem(Phaser.Physics.ARCADE);
+    this.physics.arcade.gravity.y = 150;
+    this.player = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'player');
     this.gameover = false;
     this.totalBunnies = 20;
     this.totalSpacerocks = 13;
@@ -34,7 +38,7 @@ create: function() {
       this.background = this.game.add.tileSprite(0,0, this.game.world.width, this.game.world.height, 'space');
       this.background.autoScroll(-60, -20);
       this.buildPlayer();
-      this.buildTailEmitter();
+      // this.buildTailEmitter();
       this.buildBunnies();
       this.buildSpaceRocks();
       this.buildEmitter();
@@ -102,7 +106,7 @@ create: function() {
       }
      },
      respawnRock: function(r) {
-        if(this.gameover == false) {
+        if(this.gameover === false) {
           r.reset(this.rnd.integerInRange(0, this.world.width), this.rnd.realInRange(-1500, 0));
           r.body.velocity.y = this.rnd.integerInRange(200, 400);
           }
@@ -111,14 +115,14 @@ create: function() {
        buildEmitter:function() {
         this.burst = this.add.emitter(0, 0, 80); //80 is the amount of particles being built
         this.burst.minParticleScale = 0.3;
-        this.burst.maxParticleScale = 1.2;
+        this.burst.maxParticleScale = 1;
         this.burst.minParticleSpeed.setTo(-30, 30);
         this.burst.maxParticleSpeed.setTo(30, -30);
-        this.burst.makeParticles('explosion');
+        this.burst.makeParticles('prettyLaserball');
         this.input.onDown.add(this.fireBurst, this); //this is the input itself
     },
       fireBurst: function(pointer) { //pointer is the input
-        if(this.gameover == false) {
+        if(this.gameover === false) {
           this.burst.emitX = pointer.x;
           this.burst.emitY = pointer.y;
           this.burst.start(true, 2000, null, 20);
@@ -153,7 +157,7 @@ create: function() {
     buildPlayer: function() {
       this.player = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'player');
       this.player.anchor.setTo(0.5, 0.5);
-      this.player.scale.setTo(1.5);
+      this.player.scale.setTo(2.5);
       this.physics.enable(this.player, Phaser.Physics.ARCADE);
       // this.player.speed = this.playerSpeed;
       this.player.maxSpeed = this.maxSpeed;
@@ -161,20 +165,27 @@ create: function() {
       // this.player.drag = this.drag;
       this.player.body.collideWorldBounds = true;
       this.input.onDown.add(this.cursors, this);
-  },
+
   // emitter for catbutt sparkletbutt
-    buildTailEmitter:function() {
-      this.catTrail = this.add.emitter(this.player.x, this.player.y);
-      this.catTrail.width =10;
-      this.catTrail.makeParticles('sparklebutt');
-      this.catTrail.setXSpeed(220, -20);
-      this.catTrail.setYSpeed(100, 90);
-      this.catTrail.setRotation(125, -125);
-      this.catTrail.setScale(0.5, 0.8, 0.5, 0.8, Phaser.Easing.Quintic.Out);
-      this.catTrail.start(false, 1000, 10);
+      this.player.catTrail = this.add.emitter(this.player.x, this.player.y + 50, 400);
+      this.player.catTrail.width =20;
+      this.player.catTrail.makeParticles('sparklebutt');
+      this.player.catTrail.setXSpeed(20, -20);
+      this.player.catTrail.setYSpeed(100, 90);
+      this.player.catTrail.setRotation(125, -125);
+      this.player.catTrail.setScale(0.5, 0.8, 0.5, 0.8, Phaser.Easing.Quintic.Out);
+      this.player.catTrail.start(false, 500, 10);
+      this.player.catTrail.minParticleScale = .3;
+      this.player.catTrail.minParticleScale = 1.2;
+      this.player.catTrail.minParticleSpeed.setTo(-30,30);
+      this.player.catTrail.maxParticleSpeed.setTo(30,-30);
         },
     cursors: function() {
         this.cursors = this.game.input.keyboard.createCursorKeys();
+         if(this.game.input.activePointer.justPressed()) {
+      this.game.physics.arcade.moveToPointer(this.player, this.playerSpeed);
+        }
+        // fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.player.body.acceleration.x = 0;
     if (this.game.input.x < this.game.width -20 &&
         this.game.input.x > 20 &&

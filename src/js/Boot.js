@@ -19,7 +19,6 @@ SpaceCats.Boot.prototype = {
     this.scale.minHeight = 470;
     this.scale.maxWidth = 2880;
     this.scale.maxHeight = 1920;
-
     //have the game centered horizontally
     this.scale.pageAlignHorizontally = true;
     this.scale.pageAlignVertically = true;
@@ -29,7 +28,7 @@ SpaceCats.Boot.prototype = {
 
     //physics system for movement
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
-
+    this.game.time.events.add(Phaser.Timer.SECOND * 470, this).autoDestroy = true;
     this.state.start('Preload');
     }
   };
