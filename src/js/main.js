@@ -8,4 +8,3 @@ SpaceCats.game.state.add('MainMenu', SpaceCats.MainMenu);
 SpaceCats.game.state.add('Game', SpaceCats.Game);
 
 SpaceCats.game.state.start('Boot');
-
