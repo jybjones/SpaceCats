@@ -14,7 +14,7 @@ SpaceCats.MainMenu.prototype = {
     this.background.autoScroll(-60, -20);
 
     //start game text
-    var text = "Tap to begin";
+    var text = "Click to BEGIIIIIIIIIN";
     var style = { font: "50px Arial", fill: "#fff", align: "center" };
     var t = this.game.add.text(this.game.width/2, this.game.height/2, text, style);
     t.anchor.set(0.5);
@@ -29,7 +29,7 @@ SpaceCats.MainMenu.prototype = {
   //////////press to START/////////////////
   update: function() {
     if(this.game.input.activePointer.justPressed()) {
-      this.game.state.start('Game', 'explodeBig');
+      this.game.state.start('Game');
 
     }
   }
