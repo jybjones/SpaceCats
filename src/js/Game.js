@@ -2,20 +2,22 @@ var SpaceCats = SpaceCats || {};
 SpaceCats.Game = function(game){
   this.player;
   this.lazerBall;
+  // this.fireRate = 100;
+  // this.nextFire = 0;
   this.burst; ///explosition particles
   this.gameover;
   // this.bank;
   this.catTrail;
   this.game;
-  this.sprite;
   // this.countdown;
   // this.totalBunnies;
   // this.bunnyGroup;
-  // this.totalSpacerocks;
-  // this.spacerockGroup;
+  this.totalSpacerocks;
+  this.spacerockGroup;
   // this.burst; ///explosition particles
   this.gameover;
-  console.log(this.player);
+  this.fireButton;
+  this.lazerTimer = 0;
 };
 
 
@@ -25,20 +27,15 @@ create: function() {
     // this.background = this.game.add.tileSprite(0,0, this.game.world.width, this.game.world.height, 'space');
     // this.background.autoScroll(-60, -20);
     // this.physics.arcade.gravity.y = 150;
+
     //////////PLAYER!!!!///////
-    this.player = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'player');
-    this.player.anchor.set(0.5);
-    this.physics.enable(this.player, Phaser.Physics.ARCADE);
 
-    //rotate player for illusion of "banking"
-      // this.bank = this.player.body.velocity.x / this.maxSpeed;
-      //  this.player.scale.x = 1 - Math.abs(this.bank) / 3;
-      //   this.player.angle = this.bank * 100;
-         ////higher the number the more he can turn
-             ////keep the trail lined up with the but
+      this.player = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'player');
+      this.player.anchor.set(0.5);
+      this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
+      this.player.body.allowRotation = false;
+      this.catTrail = SpaceCats.game.add.emitter(this.player.x, this.player.y + 50, 40);
 
-     this.catTrail = SpaceCats.game.add.emitter(this.player.x, this.player.y + 50, 40);
-      // this.catTrail.makeParticles('sparklebutt');
       this.player.addChild(this.catTrail);
       this.catTrail.start(false, 2000, 100);
       this.catTrail.y = 0;
@@ -48,22 +45,17 @@ create: function() {
       this.catTrail.setXSpeed(20, -20);
       this.catTrail.setYSpeed(100, 90);
       this.catTrail.setRotation(125, -125);
-    // catTrail.setAlpha(1, 0.01, 800);
       this.catTrail.setScale(0.15, 0.8, 0.15, 0.8, 2000, Phaser.Easing.Quintic.Out);
 
-      // this.lazerBall = this.add.group();
-      // this.lazerBall = true;
-      // this.lazerBall.physicsBodyType = this.lazerBall.Phaser.Physics.ARCADE;
-      // this.lazerBall.createMultiple(50, 'lazerBall');
-      // this.lazerBall.setAll('checkWorldBounds', true);
-      // this.lazerBall.setAll('outOfBoundsKill', true);
-
-      // this.sprite = this.add.sprite(400, 300, 'player');
-      // this.sprite.anchor.set(0.5);
-      // this.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-      // this.sprite.body.allowRotation = false;
+      this.lazerBall = this.add.group();
+      this.lazerBall.enableBody = true;
+      this.lazerBall.physicsBodyType = Phaser.Physics.ARCADE;
+      this.lazerBall.createMultiple(50, 'lazerBall');
+      this.lazerBall.setAll('checkWorldBounds', true);
+      this.lazerBall.setAll('outOfBoundsKill', true);
 
       this.gameover = false;
+      this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     // this.totalBunnies = 20;
     // this.totalSpacerocks = 13;
 
@@ -83,32 +75,64 @@ update: function() {
     {
         //  Otherwise turn off velocity because we're close enough to the pointer
         this.player.body.velocity.set(0);
-    }
-    //   this.sprite.rotation = this.game.physics.arcade.angleToPointer(this.sprite);
+        }
+        ////////LAZERS////////////
+    // this.player.rotation = this.game.physics.arcade.angleToPointer(this.player);
 
     // if (this.game.input.activePointer.isDown)
     // {
     //     fire();
     // }
-  }
-
-};
-
-
-function fire() {
-
-    if (this.game.time.now > nextFire && this.lazerBall.countDead() > 0)
-    {
-        nextFire = this.game.time.now + fireRate;
-
-        var lazer = this.lazerBall.getFirstDead();
-
-        lazer.reset(sprite.x - 8, sprite.y - 8);
-
-        this.game.physics.arcade.moveToPointer(lazer, 300);
-    }
+    if (this.fireButton.isDown || this.game.input.activePointer.isDown) {
+    fireLazers();
+   }
 
 }
+}
+
+
+//////////////FUNCTIONS HERE!! SpaceCats.game refer///////
+//  fire: function () {
+
+//     if (this.game.time.now > this.nextFire && this.lazerBall.countDead() > 0)
+//     {
+//         this.nextFire = this.game.time.now + this.fireRate;
+
+//         var lazer = this.lazerBall.getFirstDead();
+
+//         lazer.reset(this.player.x - 8, this.player.y - 8);
+
+//         this.game.physics.arcade.moveToPointer(lazer, 300);
+//     }
+
+// }
+   function fireLazers() {
+    var lazerTimer = 0;
+    //  To avoid them being allowed to fire too fast we set a time limit
+    // console.log(SpaceCats.game.player, 'player')
+    if (SpaceCats.game.time.now > lazerTimer)
+    {
+        var LAZER_SPEED = 400;
+        var LAZER_SPACING = 250;
+        //  Grab the first lazer we can from the pool
+        var lazer = SpaceCats.game.this.lazerBall.getFirstExists(false);
+
+        if (lazer)
+        {
+            //  And fire it
+            //  Make lazer come out of tip of ship with right angle
+            var lazerOffset = 20 * Math.sin(this.game.math.degToRad(this.player.angle));
+            lazer.reset(this.player.x + lazerOffset, this.player.y);
+            lazer.angle = this.player.angle;
+            this.game.physics.arcade.velocityFromAngle(lazer.angle - 90, LAZER_SPEED, lazer.body.velocity);
+            lazer.body.velocity.x += this.player.body.velocity.x;
+
+            lazerTimer = game.time.now + LAZER_SPACING;
+        }
+    }
+}
+
+// };
 
     // update: function() {
     //     // this.physics.arcade.overlap(this.spacerockgroup, this.burst, this.burstCollision, null, this);
@@ -253,4 +277,3 @@ function fire() {
     //         this.countdown.setText('Bunnies Left ' + this.totalBunnies);
     //     }
     // },
-

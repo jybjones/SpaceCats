@@ -22,7 +22,7 @@ SpaceCats.Preload.prototype = {
     this.load.image('sparklebutt', 'images/sparklebutt2.png');
     this.load.image('lazers', 'images/lazer-eyes.png');
     this.load.spritesheet('explosion', 'images/explosion.png');
-    this.load.spritesheet('prettyLaserball', 'images/prettyLaserball.png');
+    this.load.spritesheet('lazerBall', 'images/prettyLaserball.png');
     this.load.spritesheet('explosionBig', 'images/explodeBig.png');
     this.load.atlasXML('bunny', 'images/bunny.png', 'images/bunny.xml');
     this.load.atlasXML('spacerock', 'images/SpaceRock.png', 'images/SpaceRock.xml');
