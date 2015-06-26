@@ -1,11 +1,13 @@
 var SpaceCats = SpaceCats || {};
 SpaceCats.Game = function(game){
   this.player;
+  this.lazerBall;
   this.burst; ///explosition particles
   this.gameover;
-  this.bank;
+  // this.bank;
   this.catTrail;
   this.game;
+  this.sprite;
   // this.countdown;
   // this.totalBunnies;
   // this.bunnyGroup;
@@ -25,16 +27,13 @@ create: function() {
     // this.physics.arcade.gravity.y = 150;
     //////////PLAYER!!!!///////
     this.player = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'player');
+    this.player.anchor.set(0.5);
     this.physics.enable(this.player, Phaser.Physics.ARCADE);
-    this.input.onDown.add(this.cursors, this);
-    this.playerSpeed = 200;
-    this.maxSpeed = 400;
-    this.acceleration = 400;
-    this.drag = 300;
+
     //rotate player for illusion of "banking"
-      this.bank = this.player.body.velocity.x / this.maxSpeed;
-       this.player.scale.x = 1 - Math.abs(this.bank) / 3;
-        this.player.angle = this.bank * 100;
+      // this.bank = this.player.body.velocity.x / this.maxSpeed;
+      //  this.player.scale.x = 1 - Math.abs(this.bank) / 3;
+      //   this.player.angle = this.bank * 100;
          ////higher the number the more he can turn
              ////keep the trail lined up with the but
 
@@ -50,7 +49,19 @@ create: function() {
       this.catTrail.setYSpeed(100, 90);
       this.catTrail.setRotation(125, -125);
     // catTrail.setAlpha(1, 0.01, 800);
-      this.catTrail.setScale(0.05, 0.4, 0.05, 0.4, 2000, Phaser.Easing.Quintic.Out);
+      this.catTrail.setScale(0.15, 0.8, 0.15, 0.8, 2000, Phaser.Easing.Quintic.Out);
+
+      // this.lazerBall = this.add.group();
+      // this.lazerBall = true;
+      // this.lazerBall.physicsBodyType = this.lazerBall.Phaser.Physics.ARCADE;
+      // this.lazerBall.createMultiple(50, 'lazerBall');
+      // this.lazerBall.setAll('checkWorldBounds', true);
+      // this.lazerBall.setAll('outOfBoundsKill', true);
+
+      // this.sprite = this.add.sprite(400, 300, 'player');
+      // this.sprite.anchor.set(0.5);
+      // this.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+      // this.sprite.body.allowRotation = false;
 
       this.gameover = false;
     // this.totalBunnies = 20;
@@ -59,41 +70,53 @@ create: function() {
     // this.countdown = this.add.bitmapText(10,10,'source here', 'Bunnies Left ' + this.totalBunnies, 20);
   },
 
-    cursors: function() {
-        this.cursors = this.game.input.keyboard.createCursorKeys();
-         if(this.game.input.activePointer.justPressed()) {
-      this.game.physics.arcade.moveToPointer(this.player, this.playerSpeed);
-        }
-        // fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        this.player.body.acceleration.x = 0;
-    if (this.game.input.x < this.game.width -20 &&
-        this.game.input.x > 20 &&
-        this.game.input.y > 20 &&
-        this.game.input.y < this.game.height - 20) {
-        var minDist = 200;
-        var dist = this.game.input.x - this.player.x;
-        this.player.body.velocity.x = this.maxSpeed * this.game.math.clamp(dist / minDist, -1, 1);
-    }
+update: function() {
 
-    // stop at the screen edges
-    if (this.player.x > this.game.width -50) {
-      this.player.x = this.game.width -50;
-      this.player.body.acceleration.x = 0;
+    //  If the PLAYER is > 8px away from the pointer then let's move to it
+    if (this.physics.arcade.distanceToPointer(this.player, this.game.input.activePointer) > 8)
+    {
+        //  Make the object seek to the active pointer (mouse or touch).
+        this.physics.arcade.moveToPointer(this.player, 400);
+        this.player.rotation = this.game.physics.arcade.angleToPointer(this.player);
     }
-    if (this.player.x < 50) {
-      this.player.x = 50;
-      this.player.body.acceleration.x = 0;
+    else
+    {
+        //  Otherwise turn off velocity because we're close enough to the pointer
+        this.player.body.velocity.set(0);
     }
-     // Move player towards mouse pointer
+    //   this.sprite.rotation = this.game.physics.arcade.angleToPointer(this.sprite);
+
+    // if (this.game.input.activePointer.isDown)
+    // {
+    //     fire();
+    // }
+  }
+
+};
 
 
-  },
-    update: function() {
-        // this.physics.arcade.overlap(this.spacerockgroup, this.burst, this.burstCollision, null, this);
-        // this.physics.arcade.overlap(this.spacerockgroup, this.bunnygroup, this.bunnyCollision, null, this);
-        // this.physics.arcade.overlap(this.bunnygroup, this.burst, this.friendlyFire, null, this);
-    },
+function fire() {
+
+    if (this.game.time.now > nextFire && this.lazerBall.countDead() > 0)
+    {
+        nextFire = this.game.time.now + fireRate;
+
+        var lazer = this.lazerBall.getFirstDead();
+
+        lazer.reset(sprite.x - 8, sprite.y - 8);
+
+        this.game.physics.arcade.moveToPointer(lazer, 300);
+    }
+
 }
+
+    // update: function() {
+    //     // this.physics.arcade.overlap(this.spacerockgroup, this.burst, this.burstCollision, null, this);
+    //     // this.physics.arcade.overlap(this.spacerockgroup, this.bunnygroup, this.bunnyCollision, null, this);
+    //     // this.physics.arcade.overlap(this.bunnygroup, this.burst, this.friendlyFire, null, this);
+
+    // },
+
 
 
 
