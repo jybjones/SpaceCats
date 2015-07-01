@@ -1,36 +1,34 @@
-var SpaceCats = SpaceCats || {};
-SpaceCats.MainMenu = function(game){};
+// var SpaceCats = SpaceCats || {};
+//
+var mainMenuState = {
 
-SpaceCats.MainMenu.prototype = {
-  init: function(score) {
-    var score = score || 0;
-    this.highestScore = this.highestScore || 0;
-    this.highestScore = Math.max(score, this.highestScore);
-  },
-  create: function() {
-    //show the space tile, repeated
-    this.background = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'space');
-    //give it speed in x
-    this.background.autoScroll(-60, -20);
+    create: function() {
+        // Call the 'start' function when pressing the spacebar
+        var space_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        space_key.onDown.add(this.start, this);
 
-    //start game text
-    var text = "Click to BEGIIIIIIIIIN";
-    var style = { font: "50px Arial", fill: "#fff", align: "center" };
-    var t = this.game.add.text(this.game.width/2, this.game.height/2, text, style);
-    t.anchor.set(0.5);
+        // Defining variables
+        var gameTitleStyle = { font: "38px Arial", fill: "#00ff00" };
+        var commonStyle = { font: "20px Arial", fill: "#00ff00" };
 
-    //highest score
-    text = "Highest score: "+ this.highestScore;
-    style = { font: "30px Arial", fill: "#fff", align: "center" };
+        // Adding a text centered on the screen
+        var gameTitle = this.game.add.text( game.world.width/2, game.world.height/4, "ZOMBIE DEFENSE", gameTitleStyle );
+        gameTitle.anchor.setTo(0.5, 0.5);
 
-    var h = this.game.add.text(this.game.width/2, this.game.height/2 + 50, text, style);
-    h.anchor.set(0.5);
-  },
-  //////////press to START/////////////////
-  update: function() {
-    if(this.game.input.activePointer.justPressed()) {
-      this.game.state.start('Game');
+        var radarLogo = this.game.add.sprite(game.world.width/2, game.world.height/2.2, 'radarLogo');
+        radarLogo.anchor.setTo(0.5, 0.5);
 
+        var radarLogoAnimation = game.add.tween( radarLogo );
+        radarLogoAnimation.to({angle: 360}, 3000);//Set the animation to change the angle of the sprite to 360° in 1000 milliseconds
+        radarLogoAnimation.loop( true );
+        radarLogoAnimation.start();
+
+        var startText = this.game.add.text( game.world.width/2, game.world.height/1.5, "Press space to start", commonStyle );
+        startText.anchor.setTo(0.5, 0.5);
+    },
+
+    // Start the actual game
+    start: function() {
+        this.game.state.start('Game');
     }
-  }
 };

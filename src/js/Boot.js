@@ -1,12 +1,15 @@
-var SpaceCats = SpaceCats || {};
-SpaceCats.Boot = function(){};
+// var SpaceCats = SpaceCats || {};
+// SpaceCats.Boot = function(){};
 
-// setting the game config & adding assets for loading screen
-SpaceCats.Boot.prototype = {
+// var SpaceCats = {};
+// SpaceCats.Boot = function(game) {
+
+// };
+
+var bootState = {
   preload: function(){
-    this.load.image('logo', 'images/logo.png');
-    console.log(' Boot', "awesomeTHIS")
-    this.load.image('preloadbar', 'images/preloader-bar.png');
+    this.game.load.image('radarLogo', 'images/logo.png');
+    this.game.load.image('preloadbar', 'images/preloader-bar.png');
   },
   create: function() {
     this.game.stage.backgroundColor = '#FFF';
@@ -29,6 +32,12 @@ SpaceCats.Boot.prototype = {
     //physics system for movement
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     this.game.time.events.add(Phaser.Timer.SECOND * 470, this).autoDestroy = true;
-    this.state.start('Preload');
+    this.game.state.start('Preload');
     }
   };
+
+
+
+// setting the game config & adding assets for loading screen
+// SpaceCats.Boot.prototype = {
+

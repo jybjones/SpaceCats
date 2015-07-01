@@ -1,72 +1,49 @@
 
-// var  player, lazer, lazerBall, lazerTimer,  catTrail, fireButton;
+// SpaceCats.Game = function (game) {}
+// var SpaceCats = SpaceCats || {};
+// SpaceCats.Game = function(game){
+//   this.player = "player";
+//   this.lazerBall;
+//   this.lazers;
+//   this.fireRate = 100;
+//   this.nextFire = 0;
+//   this.burst; ///explosition particles
+//   this.gameover;
+//   // this.bank;
+//   this.catTrail;
+//   this.game;
+//   // this.countdown;
+//   // this.totalBunnies;
+//   // this.bunnyGroup;
+//   this.totalSpacerocks;
+//   this.spacerockGroup;
+//   // this.burst; ///explosition particles
+//   this.gameover;
+//   this.fireButton;
+//   this.lazerTimer = 0;
+// };
+// SpaceCats.Game = function(game){};
+var gameState = {
 
-SpaceCats.Game = function (game) {}
-var SpaceCats = SpaceCats || {};
-SpaceCats.Game = function(game){
-  this.player;
-  this.lazerBall;
-  this.fireRate = 100;
-  this.nextFire = 0;
-  this.burst; ///explosition particles
-  this.gameover;
-  // this.bank;
-  this.catTrail;
-  this.game;
-  // this.countdown;
-  // this.totalBunnies;
-  // this.bunnyGroup;
-  this.totalSpacerocks;
-  this.spacerockGroup;
-  // this.burst; ///explosition particles
-  this.gameover;
-  this.fireButton;
-  this.lazerTimer = 0;
-};
-
-
-SpaceCats.Game.prototype = {
-create: function() {
+// SpaceCats.Game.prototype = {
+// SpaceCats.Game.prototype = {
+  create: function() {
     this.physics.startSystem(Phaser.Physics.ARCADE);
     this.background = this.game.add.tileSprite(0,0, this.game.world.width, this.game.world.height, 'space');
     this.background.autoScroll(-60, -20);
-    // this.physics.arcade.gravity.y = 150;
+    this.setupPlayer();
+    this.player;
+    this.catTrail;
+    this.setupButtons();
+    this.setupLazers();
+    this.setupEnemies();
+    this.setupExplosions();
+    game.time.events.loop(Phaser.Timer.SECOND * 2, this.spawnEnemy, this);
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+    },
+    render: function() {},
 
-    //////////PLAYER!!!!///////
-
-      this.player = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'player');
-      this.player.anchor.set(0.5);
-      this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
-      this.player.body.allowRotation = false;
-      this.catTrail = SpaceCats.game.add.emitter(this.player.x, this.player.y + 50, 40);
-
-      this.player.addChild(this.catTrail);
-      this.catTrail.start(false, 2000, 100);
-      this.catTrail.y = 0;
-      this.catTrail.x = 0;
-      this.catTrail.width =10;
-      this.catTrail.makeParticles('sparklebutt');
-      this.catTrail.setXSpeed(20, -20);
-      this.catTrail.setYSpeed(100, 90);
-      this.catTrail.setRotation(125, -125);
-      this.catTrail.setScale(0.15, 0.8, 0.15, 0.8, 2000, Phaser.Easing.Quintic.Out);
-
-      this.lazerBall = this.add.group();
-      this.lazerBall.enableBody = true;
-      this.lazerBall.physicsBodyType = Phaser.Physics.ARCADE;
-      this.lazerBall.createMultiple(50, 'lazerBall');
-      this.lazerBall.setAll('checkWorldBounds', true);
-      this.lazerBall.setAll('outOfBoundsKill', true);
-
-      this.gameover = false;
-      this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    // this.totalBunnies = 20;
-    // this.totalSpacerocks = 13;
-
-    // this.countdown = this.add.bitmapText(10,10,'source here', 'Bunnies Left ' + this.totalBunnies, 20);
-  },
-
-update: function() {
+    update: function() {
 
     //  If the PLAYER is > 8px away from the pointer then let's move to it
     if (this.physics.arcade.distanceToPointer(this.player, this.game.input.activePointer) > 8)
@@ -80,6 +57,17 @@ update: function() {
         //  Otherwise turn off velocity because we're close enough to the pointer
         this.player.body.velocity.set(0);
         }
+
+    //check for cannon commands
+        if( this.cursors.left.isDown ) {
+            if( this.player.angle > (-90) )
+                this.player.angle -= 0.5;
+        }
+        else if( this.cursors.right.isDown ){
+            if( this.player.angle < 90 )
+                this.player.angle += 0.5;
+        }
+
         ////////LAZERS////////////
     // this.player.rotation = this.game.physics.arcade.angleToPointer(this.player);
 
@@ -87,48 +75,115 @@ update: function() {
     // {
     //     fire();
     // }
-    if (this.fireButton.isDown || this.game.input.activePointer.isDown)
-  {
-    var fireRate = 100;
-    var nextFire = 0;
-
-    if (this.game.time.now > nextFire && this.lazerBall.countDead() > 0)
-
-    {
-        nextFire = this.game.time.now + fireRate;
-
-        var lazer = this.lazerBall.getFirstDead();
-
-        lazer.reset(this.player.x - 8, this.player.y - 8);
-
-        this.game.physics.arcade.moveToPointer(lazer, 300);
+    if(this.fireButton.isDown) {
+      this.fireLazers();
     }
-   }
+    game.physics.arcade.overlap( this.lazers, this.enemies, this.lazerHitsEnemy, null, this);
+    // this.game.physics.arcade.overlap( this.lazers, null, this);
+  },
 
-}
+  lazerHitsEnemy : function(lazer, enemy) {
 
+        //  When a lzaer hits an alien we kill them both
+        lazer.kill();
+        enemy.kill();
+
+        //  And create an explosion
+        var explosion = this.explosions.getFirstExists(false);
+        explosion.reset(enemy.body.x, enemy.body.y);
+        explosion.play('boom', 30, false, true);
+    },
+
+    fireLazers : function() {
+  if( this.lazerTime == null )
+            this.lazerTime = this.game.time.now;
+
+        //  To avoid them being allowed to fire too fast we set a time limit
+        if ( this.game.time.now > this.lazerTime )
+        {
+            //  Grab the first bullet we can from the pool
+            var lazer = this.lazers.getFirstExists(false);
+            if (lazer) {
+                //  And fire it
+                lazer.reset( this.player.x, this.player.y );
+                this.player.angle = this.player.angle;
+                lazer.body.velocity.y = Math.cos( this.player.angle * (Math.PI/180) ) * (-400);
+                lazer.body.velocity.x = Math.sin( this.player.angle * (Math.PI/180) ) * 400;
+                this.lazerTime = this.game.time.now + 300;
+            }
+        }
+  },
+  spawnEnemy: function() {
+  var enemy = this.enemies.getFirstExists(false);
+        if( enemy ) {
+            enemy.reset( Math.random() * game.world.width, 0 ); //set enemy to emerge from top border
+            enemy.body.velocity.y = 10; //downward velocity
+        }
+    },
+setupExplosions: function() {
+        this.explosions = game.add.group();
+        this.explosions.createMultiple(30, 'explode');
+
+        this.explosions.forEach( function( explosion ) {
+            explosion.anchor.x = 0.5;
+            explosion.anchor.y = 0.5;
+            explosion.animations.add('boom');
+        }, this );
+
+    },
+setupButtons: function() {
+  this.cursors = game.input.keyboard.createCursorKeys();
+        this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+ },
+setupLazers: function() {
+        this.lazers = this.game.add.group();
+        this.lazers.enableBody = true;
+        this.lazers.physicsBodyType = Phaser.Physics.ARCADE;
+        this.lazers.createMultiple(10, 'lazers');
+        this.lazers.setAll('anchor.x', 0.5);
+        this.lazers.setAll('anchor.y', 1.0);
+        this.lazers.setAll('outOfBoundsKill', true);
+        this.lazers.setAll('checkWorldBounds', true);
+
+ },
+ setupEnemies: function() {
+        this.enemies = game.add.group();
+        this.enemies.enableBody = true;
+        this.enemies.physicsBodyType = Phaser.Physics.ARCADE;
+        this.enemies.createMultiple(30, "enemy");
+        this.enemies.setAll('anchor.x', 0.5);
+        this.enemies.setAll('anchor.y', 0.5);
+        this.enemies.setAll('outOfBoundsKill', true);
+        this.enemies.setAll('checkWorldBounds', true);
+    },
+
+    //////////PLAYER!!!!///////
+  setupPlayer: function() {
+    this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
+      this.player.anchor.set(0.5);
+      this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
+      this.player.body.allowRotation = false;
+      this.catTrail = game.add.emitter(this.player.x, this.player.y + 50, 40);
+
+      this.player.addChild(this.catTrail);
+      this.catTrail.start(false, 2000, 100);
+      this.catTrail.y = 0;
+      this.catTrail.x = 0;
+      this.catTrail.width =10;
+      this.catTrail.makeParticles('sparklebutt');
+      this.catTrail.setXSpeed(20, -20);
+      this.catTrail.setYSpeed(100, 90);
+      this.catTrail.setRotation(125, -125);
+      this.catTrail.setScale(0.15, 0.8, 0.15, 0.8, 2000, Phaser.Easing.Quintic.Out);
+ }
 };
 
 
-//////////////FUNCTIONS HERE!! SpaceCats.game refer///////
-//  function fireLazers () {
-//   debugger
-//   // var fireRate = 100;
-//   //   var nextFire = 0;
+    // this.totalBunnies = 20;
+    // this.totalSpacerocks = 13;
 
-//   //   if (this.game.time.now > nextFire && this.lazerBall.countDead() > 0)
+    // this.countdown = this.add.bitmapText(10,10,'source here', 'Bunnies Left ' + this.totalBunnies, 20);
 
-//   //   {
-//   //       nextFire = this.game.time.now + fireRate;
-
-//   //       var lazer = this.lazerBall.getFirstDead();
-
-//   //       lazer.reset(this.player.x - 8, this.player.y - 8);
-
-//   //       this.game.physics.arcade.moveToPointer(lazer, 300);
-//   //   }
-
-// }
 
 //    function fireLazers() {
 //  debugger;
@@ -168,35 +223,6 @@ update: function() {
     // },
 
 
-
-
-
-  // buildPlayer: function() {
-  //     this.player = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'player');
-  //     this.player.anchor.setTo(0.5, 0.5);
-  //     this.player.scale.setTo(2.5);
-  //     this.physics.enable(this.player, Phaser.Physics.ARCADE);
-  //     // this.player.speed = this.playerSpeed;
-  //     this.player.maxSpeed = this.maxSpeed;
-  //     this.player.acceleration = this.acceleration;
-  //     // this.player.drag = this.drag;
-  //     this.player.body.collideWorldBounds = true;
-  //     this.input.onDown.add(this.cursors, this);
-
-  // // emitter for catbutt sparkletbutt
-  //     this.player.catTrail = this.add.emitter(this.player.x, this.player.y + 50, 400);
-  //     this.player.catTrail.width =20;
-  //     this.player.catTrail.makeParticles('sparklebutt');
-  //     this.player.catTrail.setXSpeed(20, -20);
-  //     this.player.catTrail.setYSpeed(100, 90);
-  //     this.player.catTrail.setRotation(125, -125);
-  //     this.player.catTrail.setScale(0.5, 0.8, 0.5, 0.8, Phaser.Easing.Quintic.Out);
-  //     this.player.catTrail.start(false, 500, 10);
-  //     this.player.catTrail.minParticleScale = .3;
-  //     this.player.catTrail.minParticleScale = 1.2;
-  //     this.player.catTrail.minParticleSpeed.setTo(-30,30);
-  //     this.player.catTrail.maxParticleSpeed.setTo(30,-30);
-  //       },
   // buildBunnies: function() {
    //      this.bunnygroup = this.add.group();
    //      this.bunnygroup.enableBody = true;
