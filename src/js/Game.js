@@ -1,9 +1,13 @@
+
+// var  player, lazer, lazerBall, lazerTimer,  catTrail, fireButton;
+
+SpaceCats.Game = function (game) {}
 var SpaceCats = SpaceCats || {};
 SpaceCats.Game = function(game){
   this.player;
   this.lazerBall;
-  // this.fireRate = 100;
-  // this.nextFire = 0;
+  this.fireRate = 100;
+  this.nextFire = 0;
   this.burst; ///explosition particles
   this.gameover;
   // this.bank;
@@ -24,8 +28,8 @@ SpaceCats.Game = function(game){
 SpaceCats.Game.prototype = {
 create: function() {
     this.physics.startSystem(Phaser.Physics.ARCADE);
-    // this.background = this.game.add.tileSprite(0,0, this.game.world.width, this.game.world.height, 'space');
-    // this.background.autoScroll(-60, -20);
+    this.background = this.game.add.tileSprite(0,0, this.game.world.width, this.game.world.height, 'space');
+    this.background.autoScroll(-60, -20);
     // this.physics.arcade.gravity.y = 150;
 
     //////////PLAYER!!!!///////
@@ -83,54 +87,76 @@ update: function() {
     // {
     //     fire();
     // }
-    if (this.fireButton.isDown || this.game.input.activePointer.isDown) {
-    fireLazers();
+    if (this.fireButton.isDown || this.game.input.activePointer.isDown)
+  {
+    var fireRate = 100;
+    var nextFire = 0;
+
+    if (this.game.time.now > nextFire && this.lazerBall.countDead() > 0)
+
+    {
+        nextFire = this.game.time.now + fireRate;
+
+        var lazer = this.lazerBall.getFirstDead();
+
+        lazer.reset(this.player.x - 8, this.player.y - 8);
+
+        this.game.physics.arcade.moveToPointer(lazer, 300);
+    }
    }
 
 }
-}
+
+};
 
 
 //////////////FUNCTIONS HERE!! SpaceCats.game refer///////
-//  fire: function () {
+//  function fireLazers () {
+//   debugger
+//   // var fireRate = 100;
+//   //   var nextFire = 0;
 
-//     if (this.game.time.now > this.nextFire && this.lazerBall.countDead() > 0)
-//     {
-//         this.nextFire = this.game.time.now + this.fireRate;
+//   //   if (this.game.time.now > nextFire && this.lazerBall.countDead() > 0)
 
-//         var lazer = this.lazerBall.getFirstDead();
+//   //   {
+//   //       nextFire = this.game.time.now + fireRate;
 
-//         lazer.reset(this.player.x - 8, this.player.y - 8);
+//   //       var lazer = this.lazerBall.getFirstDead();
 
-//         this.game.physics.arcade.moveToPointer(lazer, 300);
-//     }
+//   //       lazer.reset(this.player.x - 8, this.player.y - 8);
+
+//   //       this.game.physics.arcade.moveToPointer(lazer, 300);
+//   //   }
 
 // }
-   function fireLazers() {
-    var lazerTimer = 0;
-    //  To avoid them being allowed to fire too fast we set a time limit
-    // console.log(SpaceCats.game.player, 'player')
-    if (SpaceCats.game.time.now > lazerTimer)
-    {
-        var LAZER_SPEED = 400;
-        var LAZER_SPACING = 250;
-        //  Grab the first lazer we can from the pool
-        var lazer = SpaceCats.game.this.lazerBall.getFirstExists(false);
 
-        if (lazer)
-        {
-            //  And fire it
-            //  Make lazer come out of tip of ship with right angle
-            var lazerOffset = 20 * Math.sin(this.game.math.degToRad(this.player.angle));
-            lazer.reset(this.player.x + lazerOffset, this.player.y);
-            lazer.angle = this.player.angle;
-            this.game.physics.arcade.velocityFromAngle(lazer.angle - 90, LAZER_SPEED, lazer.body.velocity);
-            lazer.body.velocity.x += this.player.body.velocity.x;
+//    function fireLazers() {
+//  debugger;
+//     //  To avoid them being allowed to fire too fast we set a time limit
+//     console.log('player')
+//     if (SpaceCats.game.time.now > lazerTimer)
 
-            lazerTimer = game.time.now + LAZER_SPACING;
-        }
-    }
-}
+//     {
+//         var LAZER_SPEED = 400;
+//         var LAZER_SPACING = 250;
+//         //  Grab the first lazer we can from the pool
+//         // var lazer = lazerBall.getFirstExists(false);
+//         var lazer = lazerBall
+
+//         if (lazer)
+//         {
+//             //  And fire it
+//             //  Make lazer come out of tip of ship with right angle
+//             var lazerOffset = 20 * Math.sin(this.game.math.degToRad(this.player.angle));
+//             lazer.reset(this.player.x + lazerOffset, this.player.y);
+//             lazer.angle = this.player.angle;
+//             this.game.physics.arcade.velocityFromAngle(lazer.angle - 90, LAZER_SPEED, lazer.body.velocity);
+//             lazer.body.velocity.x += this.player.body.velocity.x;
+
+//             lazerTimer = game.time.now + LAZER_SPACING;
+//         }
+//     }
+// }
 
 // };
 
