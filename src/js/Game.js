@@ -58,7 +58,7 @@ var gameState = {
         this.player.body.velocity.set(0);
         }
 
-    //check for cannon commands
+    //check for player commands
         if( this.cursors.left.isDown ) {
             if( this.player.angle > (-90) )
                 this.player.angle -= 0.5;

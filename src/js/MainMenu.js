@@ -12,7 +12,7 @@ var mainMenuState = {
         var commonStyle = { font: "20px Arial", fill: "#00ff00" };
 
         // Adding a text centered on the screen
-        var gameTitle = this.game.add.text( game.world.width/2, game.world.height/4, "ZOMBIE DEFENSE", gameTitleStyle );
+        var gameTitle = this.game.add.text( game.world.width/2, game.world.height/4, "SPACE CATS", gameTitleStyle );
         gameTitle.anchor.setTo(0.5, 0.5);
 
         var radarLogo = this.game.add.sprite(game.world.width/2, game.world.height/2.2, 'radarLogo');

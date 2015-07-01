@@ -17,7 +17,7 @@ var preloadState = {
     this.game.load.image('player','images/flyingcat.png');
     this.game.load.image('sparklebutt', 'images/sparklebutt2.png');
     this.game.load.image('lazers', 'images/lazer-eyes.png');
-    this.game.load.spritesheet('explode', 'images/explosion.png');
+    this.game.load.spritesheet('explode', 'images/explode.png', 128, 128, 16);
     this.game.load.spritesheet('lazerBall', 'images/prettyLaserball.png');
     this.game.load.spritesheet('explosionBig', 'images/explodeBig.png');
     this.game.load.atlasXML('bunny', 'images/bunny.png', 'images/bunny.xml');
