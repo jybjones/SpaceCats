@@ -1,36 +1,7 @@
-
-// SpaceCats.Game = function (game) {}
-// var SpaceCats = SpaceCats || {};
-// SpaceCats.Game = function(game){
-//   this.player = "player";
-//   this.lazerBall;
-//   this.lazers;
-//   this.fireRate = 100;
-//   this.nextFire = 0;
-//   this.burst; ///explosition particles
-//   this.gameover;
-//   // this.bank;
-//   this.catTrail;
-//   this.game;
-//   // this.countdown;
-//   // this.totalBunnies;
-//   // this.bunnyGroup;
-//   this.totalSpacerocks;
-//   this.spacerockGroup;
-//   // this.burst; ///explosition particles
-//   this.gameover;
-//   this.fireButton;
-//   this.lazerTimer = 0;
-// };
-// SpaceCats.Game = function(game){};
 var gameState = {
-
-// SpaceCats.Game.prototype = {
-// SpaceCats.Game.prototype = {
   create: function() {
     this.physics.startSystem(Phaser.Physics.ARCADE);
-    this.background = this.game.add.tileSprite(0,0, this.game.world.width, this.game.world.height, 'space');
-    this.background.autoScroll(-60, -20);
+    //
     this.setupPlayer();
     this.player;
     this.catTrail;
@@ -40,25 +11,43 @@ var gameState = {
     this.setupExplosions();
     game.time.events.loop(Phaser.Timer.SECOND * 2, this.spawnEnemy, this);
         game.physics.startSystem(Phaser.Physics.ARCADE);
+    ///////Phaser Properties/////////////
+    this.game;      // a reference to the currently running game
+    this.add;       // used to add sprites, text, groups, etc
+    this.camera;    // a reference to the game camera
+    this.cache;     // the game cache
+    this.input;     // the global input manager (you can access this.input.keyboard,
+                  //   this.input.mouse, as well from it)
+    this.load;      // for preloading assets
+    this.math;      // lots of useful common math operations
+    this.sound;     // the sound manager - add a sound, play one, set-up markers, etc
+    this.stage;     // the game stage
+    this.time;      // the clock
+    this.tweens;    //  the tween manager
+    this.state;     // the state manager
+    this.world;     // the game world
+    this.particles; // the particle manager
+    this.physics;   // the physics manager
+    this.rnd;       // the repeatable random number generator
     },
-    render: function() {},
+  render: function() {},
 
-    update: function() {
+  update: function() {
 
     //  If the PLAYER is > 8px away from the pointer then let's move to it
-    if (this.physics.arcade.distanceToPointer(this.player, this.game.input.activePointer) > 8)
-    {
+      if (this.physics.arcade.distanceToPointer(this.player, this.game.input.activePointer) > 8)
+      {
         //  Make the object seek to the active pointer (mouse or touch).
         this.physics.arcade.moveToPointer(this.player, 400);
         this.player.rotation = this.game.physics.arcade.angleToPointer(this.player);
-    }
-    else
-    {
+      }
+      else
+      {
         //  Otherwise turn off velocity because we're close enough to the pointer
         this.player.body.velocity.set(0);
         }
 
-    //check for player commands
+      //check for player commands
         if( this.cursors.left.isDown ) {
             if( this.player.angle > (-90) )
                 this.player.angle -= 0.5;
@@ -75,14 +64,14 @@ var gameState = {
     // {
     //     fire();
     // }
-    if(this.fireButton.isDown) {
-      this.fireLazers();
-    }
-    game.physics.arcade.overlap( this.lazers, this.enemies, this.lazerHitsEnemy, null, this);
+      if(this.fireButton.isDown) {
+        this.fireLazers();
+        }
+        game.physics.arcade.overlap( this.lazers, this.enemies, this.lazerHitsEnemy, null, this);
     // this.game.physics.arcade.overlap( this.lazers, null, this);
-  },
+    },
 
-  lazerHitsEnemy : function(lazer, enemy) {
+      lazerHitsEnemy : function(lazer, enemy) {
 
         //  When a lzaer hits an alien we kill them both
         lazer.kill();
@@ -92,10 +81,10 @@ var gameState = {
         var explosion = this.explosions.getFirstExists(false);
         explosion.reset(enemy.body.x, enemy.body.y);
         explosion.play('boom', 30, false, true);
-    },
+      },
 
-    fireLazers : function() {
-  if( this.lazerTime == null )
+      fireLazers : function() {
+        if( this.lazerTime == null )
             this.lazerTime = this.game.time.now;
 
         //  To avoid them being allowed to fire too fast we set a time limit
@@ -112,15 +101,15 @@ var gameState = {
                 this.lazerTime = this.game.time.now + 300;
             }
         }
-  },
-  spawnEnemy: function() {
-  var enemy = this.enemies.getFirstExists(false);
-        if( enemy ) {
+       },
+        spawnEnemy: function() {
+          var enemy = this.enemies.getFirstExists(false);
+          if( enemy ) {
             enemy.reset( Math.random() * game.world.width, 0 ); //set enemy to emerge from top border
             enemy.body.velocity.y = 10; //downward velocity
-        }
-    },
-setupExplosions: function() {
+         }
+        },
+      setupExplosions: function() {
         this.explosions = game.add.group();
         this.explosions.createMultiple(30, 'explode');
 
@@ -130,52 +119,55 @@ setupExplosions: function() {
             explosion.animations.add('boom');
         }, this );
 
-    },
-setupButtons: function() {
-  this.cursors = game.input.keyboard.createCursorKeys();
+      },
+      setupButtons: function() {
+        this.cursors = game.input.keyboard.createCursorKeys();
         this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
- },
-setupLazers: function() {
+      },
+      setupLazers: function() {
         this.lazers = this.game.add.group();
         this.lazers.enableBody = true;
         this.lazers.physicsBodyType = Phaser.Physics.ARCADE;
-        this.lazers.createMultiple(10, 'lazers');
+        this.lazers.createMultiple(30, 'lazers');
         this.lazers.setAll('anchor.x', 0.5);
         this.lazers.setAll('anchor.y', 1.0);
         this.lazers.setAll('outOfBoundsKill', true);
         this.lazers.setAll('checkWorldBounds', true);
 
- },
- setupEnemies: function() {
+      },
+      setupEnemies: function() {
         this.enemies = game.add.group();
         this.enemies.enableBody = true;
         this.enemies.physicsBodyType = Phaser.Physics.ARCADE;
-        this.enemies.createMultiple(30, "enemy");
+        this.enemies.scale.setTo(1.2);
+        this.enemies.createMultiple(30, 'enemy');
         this.enemies.setAll('anchor.x', 0.5);
         this.enemies.setAll('anchor.y', 0.5);
         this.enemies.setAll('outOfBoundsKill', true);
         this.enemies.setAll('checkWorldBounds', true);
-    },
+        this.enemies.callAll('animations.add', 'animations', 'fly10', [9, 10,11,12,13,14, 15, 16, 17], 4, true);
+        this.enemies.callAll('play', null, 'fly10');
+      },
 
     //////////PLAYER!!!!///////
-  setupPlayer: function() {
-    this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
-      this.player.anchor.set(0.5);
-      this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
-      this.player.body.allowRotation = false;
-      this.catTrail = game.add.emitter(this.player.x, this.player.y + 50, 40);
+      setupPlayer: function() {
+        this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
+        this.player.anchor.set(0.5);
+        this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
+        this.player.body.allowRotation = false;
+        this.catTrail = game.add.emitter(this.player.x, this.player.y + 50, 40);
 
-      this.player.addChild(this.catTrail);
-      this.catTrail.start(false, 2000, 100);
-      this.catTrail.y = 0;
-      this.catTrail.x = 0;
-      this.catTrail.width =10;
-      this.catTrail.makeParticles('sparklebutt');
-      this.catTrail.setXSpeed(20, -20);
-      this.catTrail.setYSpeed(100, 90);
-      this.catTrail.setRotation(125, -125);
-      this.catTrail.setScale(0.15, 0.8, 0.15, 0.8, 2000, Phaser.Easing.Quintic.Out);
- }
+        this.player.addChild(this.catTrail);
+        this.catTrail.start(false, 2000, 100);
+        this.catTrail.y = 0;
+        this.catTrail.x = 0;
+        this.catTrail.width =10;
+        this.catTrail.makeParticles('sparklebutt');
+        this.catTrail.setXSpeed(20, -20);
+        this.catTrail.setYSpeed(100, 90);
+        this.catTrail.setRotation(125, -125);
+        this.catTrail.setScale(0.15, 0.8, 0.15, 0.8, 2000, Phaser.Easing.Quintic.Out);
+      },
 };
 
 

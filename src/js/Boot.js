@@ -1,11 +1,3 @@
-// var SpaceCats = SpaceCats || {};
-// SpaceCats.Boot = function(){};
-
-// var SpaceCats = {};
-// SpaceCats.Boot = function(game) {
-
-// };
-
 var bootState = {
   preload: function(){
     this.game.load.image('radarLogo', 'images/logo.png');
@@ -35,9 +27,4 @@ var bootState = {
     this.game.state.start('Preload');
     }
   };
-
-
-
-// setting the game config & adding assets for loading screen
-// SpaceCats.Boot.prototype = {
 
