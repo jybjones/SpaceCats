@@ -46,9 +46,10 @@ var gameState = {
     this.instructions.anchor.setTo(0.5, 0.5);
     this.instExpire = this.time.now + 10000;
 
-    var style = { font: '34px Arial', fill: '#fff'};
+      var style = { font: '34px Arial', fill: '#fff'};
       this.scoreText = this.game.add.text(10,10,"Score : "+this.score,style);
       this.livesText = this.game.add.text(game.world.width - 300, 10,"Lives : "+this.lives,style);
+
     //  Text
     var stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
     stateText.anchor.setTo(0.5, 0.5);
@@ -90,10 +91,11 @@ var gameState = {
       if(this.fireButton.isDown) {
         this.fireLazers();
         }
-        // game.physics.arcade.overlap(this.lazers, this.enemies, this.lazerHitsEnemy, null, this);
+
     game.physics.arcade.overlap( this.lazers, this.enemies, this.lazerHitsEnemy, null, this);
     // this.game.physics.arcade.overlap( this.lazers, null, this);
-
+      this.game.physics.arcade.collide(this.enemies, this.player, this.enemyHitPlayer,null, this);
+      this.game.physics.arcade.collide(this.enemies, this.lazers, this.lazerHitsEnemy,null, this);
         if (this.instructions.exists && this.time.now > this.instExpire) {
         this.instructions.destroy();
         }
@@ -121,6 +123,7 @@ var gameState = {
       this.livesText.setText("Lives : "+this.lives);
       var explosion = this.explosions.getFirstExists(false);
         explosion.reset(player.body.x, player.body.y);
+        explosion.reset(enemy.body.x, enemy.body.y);
         explosion.play('boom', 30, false, true);
 
          game.physics.arcade.overlap(this.player, this.enemies, this.enemyHitPlayer, null, this);
@@ -237,13 +240,15 @@ var gameState = {
         this.enemies = game.add.group();
         this.enemies.enableBody = true;
         this.enemies.physicsBodyType = Phaser.Physics.ARCADE;
-        this.enemies.scale.setTo(1.2);
+        this.enemies.scale.setTo(1.5);
         this.enemies.createMultiple(30, 'enemy');
         this.enemies.setAll('anchor.x', 0.5);
         this.enemies.setAll('anchor.y', 0.5);
         this.enemies.setAll('outOfBoundsKill', true);
         this.enemies.setAll('checkWorldBounds', true);
         this.enemies.callAll('animations.add', 'animations', 'fly10', [9, 10,11,12,13,14, 15, 16, 17], 4, true);
+        // this.enemies.callAll('animations.add', 'animations', 'fly10', [14,15,16,17,18, 20, 21,22,23], 4, true);
+
         this.enemies.callAll('play', null, 'fly10');
 
         this.nextEnemyAt = 0;
