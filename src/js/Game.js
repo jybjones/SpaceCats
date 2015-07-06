@@ -54,8 +54,8 @@ var gameState = {
       this.instExpire = this.time.now + 10000;
 
       var style = { font: '34px Arial', fill: '#fff'};
-      this.scoreText = this.game.add.text(10,10,"Score : "+this.score,style);
-      this.livesText = this.game.add.text(game.world.width - 300, 10,"Lives : "+this.lives,style);
+      this.scoreText = this.game.add.text(60,10,"Score : "+this.score,style);
+      this.livesText = this.game.add.text(game.world.width - 200, 10,"Lives : "+this.lives,style);
 
     //  Text
       var stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
@@ -100,10 +100,11 @@ var gameState = {
         var timeLeft = this.endTime - game.time.now;
         if (timeLeft >= 0) {
             // show time remaining in seconds (divide by 1000)
-            game.debug.text(Math.ceil(timeLeft / 1000) + " seconds left!", 100, 100, "#00ff00");
+            game.debug.text(Math.ceil(timeLeft / 1000) + " seconds left!", 500, 100, "#00ff00");
         }
         else {
-            game.debug.text("Ran out of time!", 100, 100, "#ff0000");
+            game.debug.text("Ran out of time!", 500, 100, "#ff0000");
+            game.state.start('GameOver');
         }
 
 
@@ -167,7 +168,7 @@ var gameState = {
         game.physics.arcade.overlap(this.player, this.enemies, this.enemyHitPlayer, null, this);
 
       if(this.lives < 0)
-        this.game.state.start('MainMenu');
+        this.game.state.start('GameOver');
     },
 
    fireLazers : function() {

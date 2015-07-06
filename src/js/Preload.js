@@ -1,5 +1,8 @@
 var preloadState = {
  preload: function() {
+   this.preloadBar = null;
+   this.radarLogo = null;
+   this.ready = false;
 //     //show loading screen
     this.preloadBar = this.add.sprite(this.world.centerX, this.world.centerY, 'preloadbar');
     this.preloadBar.anchor.setTo(0.5, 0.5);
@@ -8,7 +11,7 @@ var preloadState = {
     this.radarLogo.anchor.setTo(0.5, 0.5);
     this.preloadBar.scale.setTo(3);
     this.load.setPreloadSprite(this.preloadBar);
-    ///this.load.bitmapFont('', 'fonts/asfsdfda.png', 'fonts/adfasdf.fnt');
+
 
     ///////////////LOAD GAME ASSETS///////////////
     this.game.load.image('space', 'images/menu_background.png');
@@ -28,7 +31,7 @@ var preloadState = {
   },
   create: function() {
     console.log( 'preload')
-    this.preloadBar.cropEnabled = false;
+    // this.preloadBar.cropEnabled = false;
     game.time.events.add(Phaser.Timer.SECOND * 2, this.transition, this);
   },
   transition : function() {
