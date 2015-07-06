@@ -15,7 +15,7 @@ var preloadState = {
     this.game.load.image('enemyBullet', 'images/bullet.png');
     this.game.load.image('player','images/flyingcat.png');
     this.game.load.image('sparklebutt', 'images/sparklebutt2.png');
-    this.game.load.image('lazers', 'images/lazer-eyes.png');
+    this.game.load.image('lazers', 'images/bulletOrange.png');
     this.game.load.spritesheet('explode', 'images/explode.png', 128, 128, 16);
     this.game.load.spritesheet('enemy', 'images/doggrid.png', 70, 70);
     this.game.load.spritesheet('lazerBall', 'images/prettyLaserball.png');
@@ -29,11 +29,18 @@ var preloadState = {
   create: function() {
     console.log( 'preload')
     this.preloadBar.cropEnabled = false;
+    game.time.events.add(Phaser.Timer.SECOND * 2, this.transition, this);
   },
-
-  update: function () {
-    this.ready = true;
+  transition : function() {
+    // start game
     this.game.state.start('MainMenu');
   }
 };
+
+
+//   update: function () {
+//     this.ready = true;
+//     this.game.state.start('MainMenu');
+//   }
+// };
 
