@@ -12,6 +12,7 @@ var preloadState = {
 
     ///////////////LOAD GAME ASSETS///////////////
     this.game.load.image('space', 'images/menu_background.png');
+    this.game.load.image('enemyBullet', 'images/bullet.png');
     this.game.load.image('player','images/flyingcat.png');
     this.game.load.image('sparklebutt', 'images/sparklebutt2.png');
     this.game.load.image('lazers', 'images/lazer-eyes.png');

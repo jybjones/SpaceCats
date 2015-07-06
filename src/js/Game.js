@@ -11,7 +11,11 @@ var gameState = {
     this.setupLazers();
     this.setupEnemies();
     this.setupExplosions();
-    this.setupScore();
+    // this.setupScore();
+    this.score = 0;
+    this.lives = 9;
+    this.scoreString = '';
+    this.scoreText;
     this.PlayerAlive = true;
     game.time.events.loop(Phaser.Timer.SECOND * 2, this.spawnEnemy, this);
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -33,6 +37,7 @@ var gameState = {
     this.particles; // the particle manager
     this.physics;   // the physics manager
     this.rnd;       // the repeatable random number generator
+
     this.instructions = this.add.text( 400, 500,
       'Use mouse to Move, Press Spacebar to Fire\n' +
       'Good Luck',
@@ -40,8 +45,15 @@ var gameState = {
     );
     this.instructions.anchor.setTo(0.5, 0.5);
     this.instExpire = this.time.now + 10000;
-    },
-  render: function() {},
+
+    var style = { font: '34px Arial', fill: '#fff'};
+      this.scoreText = this.game.add.text(10,10,"Score : "+this.score,style);
+      this.livesText = this.game.add.text(game.world.width - 300, 10,"Lives : "+this.lives,style);
+    //  Text
+    var stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
+    stateText.anchor.setTo(0.5, 0.5);
+    stateText.visible = false;
+  },
 
   update: function() {
 
@@ -89,26 +101,35 @@ var gameState = {
 
       lazerHitsEnemy : function(lazer, enemy) {
         //  When a lzaer hits an enemy we kill them both
-        lazer.kill();
-        enemy.kill();
-
+      if(this.enemies.getIndex(enemy) > -1)
+        this.enemies.remove(enemy);
+      enemy.kill();
+      lazer.kill();
+      this.score += 10;
+      this.scoreText.setText("Score : "+this.score);
         //  And create an explosion
         var explosion = this.explosions.getFirstExists(false);
         explosion.reset(enemy.body.x, enemy.body.y);
         explosion.play('boom', 30, false, true);
       },
 
-    playerCollides: function(enemy, player) {
-    enemy.kill();
-    player.kill();
-
-    var explosion = this.explosions.getFirstExists(false);
-        explosion.reset(enemy.body.x, enemy.body.y);
+    enemyHitPlayer : function(player, enemy){
+      if(this.enemies.getIndex(enemy) > -1)
+        this.enemies.remove(enemy);
+      enemy.kill();
+      this.lives -= 1;
+      this.livesText.setText("Lives : "+this.lives);
+      var explosion = this.explosions.getFirstExists(false);
+        explosion.reset(player.body.x, player.body.y);
         explosion.play('boom', 30, false, true);
-        game.physics.arcade.overlap(this.player, this.enemies, this.playerCollides, null, this);
-      },
 
-      fireLazers : function() {
+         game.physics.arcade.overlap(this.player, this.enemies, this.enemyHitPlayer, null, this);
+
+      if(this.lives < 0)
+        this.game.state.start('MainMenu');
+    },
+
+   fireLazers : function() {
         if( this.lazerTime == null )
             this.lazerTime = this.game.time.now;
 
@@ -156,34 +177,34 @@ var gameState = {
 //     //  Send another enemy soon
 //     game.time.events.add(game.rnd.integerInRange(MIN_ENEMY_SPACING, MAX_ENEMY_SPACING), launchGreenEnemy);
 // }
-      setupScore: function() {
-        var score = 0;
-        var scoreString = '';
-        var scoreText;
-        var lives;
-        var stateText;
-        //  The score
-      scoreString = 'Score : ';
-     scoreText = game.add.text(10, 10, scoreString + score, { font: '34px Arial', fill: '#fff' });
-    //  Lives
-    lives = game.add.group();
-    game.add.text(game.world.width - 300, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
+  //     setupScore: function() {
+  //       var score = 0;
+  //       var scoreString = '';
+  //       var scoreText;
+  //       var lives;
+  //       var stateText;
+  //       //  The score
+  //     scoreString = 'Score : ';
+  //    scoreText = game.add.text(10, 10, scoreString + score, { font: '34px Arial', fill: '#fff' });
+  //   //  Lives
+  //   lives = game.add.group();
+  //   game.add.text(game.world.width - 300, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
 
-    //  Text
-    stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
-    stateText.anchor.setTo(0.5, 0.5);
-    stateText.visible = false;
+  //   //  Text
+  //   stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
+  //   stateText.anchor.setTo(0.5, 0.5);
+  //   stateText.visible = false;
 
-    for (var i = 0; i < 3; i++)
-    {
-        var player = lives.create(game.world.width - 160 + (60 * i), 45, 'player');
-        player.scale.x = 0.2;
-        player.scale.y = 0.2;
-        player.anchor.setTo(0.5, 0.5);
-  //      ship.angle = 90;
-        player.alpha = 0.6;
-    }
-  },
+  //   for (var i = 0; i < 3; i++)
+  //   {
+  //       var player = lives.create(game.world.width - 160 + (60 * i), 45, 'player');
+  //       player.scale.x = 0.2;
+  //       player.scale.y = 0.2;
+  //       player.anchor.setTo(0.5, 0.5);
+  // //      ship.angle = 90;
+  //       player.alpha = 0.6;
+  //   }
+  // },
 
       setupExplosions: function() {
         this.explosions = game.add.group();
