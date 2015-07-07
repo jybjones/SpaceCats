@@ -48,7 +48,7 @@ var gameState = {
 
 
  // set the end time to 30 seconds in the future
-        this.endTime = game.time.now + (1000 * 50 );
+        this.endTime = game.time.now + (1000 * 30 );
         // every time the user clicks, add 5 seconds to the end time
         // game.input.onDown.add(function() {
         //     this.endTime = this.endTime + (1000 * 5);
@@ -205,9 +205,9 @@ var gameState = {
         spawnEnemy: function() {
           var enemy = this.enemies.getFirstExists(false);
           var MIN_ENEMY_SPACING = 200;
-          var MAX_ENEMY_SPACING = 3000;
+          var MAX_ENEMY_SPACING = 1000;
           var ENEMY_SPEED = 200;
-          this.wee.play('', 0, 0.3 );
+
 
          //  if( enemy ) {
          //    enemy.reset( Math.random() * game.world.width, 0 ); //set enemy to emerge from top border
@@ -218,6 +218,7 @@ var gameState = {
         enemy.body.velocity.x = game.rnd.integerInRange(-300, 300);
         enemy.body.velocity.y = ENEMY_SPEED;
         enemy.body.drag.x = 100;
+        this.wee.play('', 0, 0.3 );
         // enemy.body.velocity.y = this.rnd.integerInRange(30, 60);
         // enemy.play('fly');
 
@@ -235,7 +236,7 @@ var gameState = {
       setupExplosions: function() {
         this.explosions = game.add.group();
         this.explosions.physicsBodyType = Phaser.Physics.ARCADE;
-        this.explosions.createMultiple(30, 'explode');
+        this.explosions.createMultiple(30, 'lazerBall');
 
         this.explosions.forEach( function(explosion ) {
             explosion.anchor.x = 0.5;
@@ -258,7 +259,7 @@ var gameState = {
         this.lazers.setAll('outOfBoundsKill', true);
         this.lazers.setAll('checkWorldBounds', true);
         this.lazers.tracking = false;
-        this.lazers.scaleSpeed = 0;
+        this.lazers.scaleSpeed = 20;
       },
 
 
@@ -266,7 +267,7 @@ var gameState = {
         this.enemies = game.add.group();
         this.enemies.enableBody = true;
         this.enemies.physicsBodyType = Phaser.Physics.ARCADE;
-        this.enemies.scale.setTo(1.5);
+        this.enemies.scale.setTo(1.6);
         this.enemies.createMultiple(30, 'enemy');
         this.enemies.setAll('anchor.x', 0.5);
         this.enemies.setAll('anchor.y', 0.5);
@@ -274,8 +275,7 @@ var gameState = {
         this.enemies.setAll('checkWorldBounds', true);
         this.enemies.callAll('animations.add', 'animations', 'fly10', [0,1,2,3,4,5,6,7,8,8,8, 9, 11,12,13,14,15,16,17,18,18,18,19, 20, 21], 4, true);
         this.enemies.callAll('play', null, 'fly10');
-        this.nextEnemyAt = 0;
-        this.enemyDelay = 500;
+        this.enemyDelay = 200;
 
         // this.enemiesTwo = game.add.group();
         // this.enemiesTwo.enableBody = true;
