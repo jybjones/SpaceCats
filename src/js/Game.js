@@ -24,9 +24,8 @@ var gameState = {
     this.ouch;
     this.boom;
     this.ding;
-
-    // this.setupPlayerIcons();
-
+    this.pew;
+    this.wee
     this.fireRate = 1000;
     this.nextFire = 0;
     this.alive = true;
@@ -46,29 +45,25 @@ var gameState = {
       this.scoreText = this.game.add.text(60,10,"Score : "+this.score,this.fontStyle);
       this.livesText = this.game.add.text(game.world.width - 200, 10,"Lives : "+this.lives,this.fontStyle);
 
-    //  Text
-      var stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
-      stateText.anchor.setTo(0.5, 0.5);
-      stateText.visible = false;
 
  // set the end time to 30 seconds in the future
         this.endTime = game.time.now + (1000 * 50 );
         // every time the user clicks, add 5 seconds to the end time
-        game.input.onDown.add(function() {
-            this.endTime = this.endTime + (1000 * 5);
-            console.log("Added 5 seconds");
-        }, this);
-      this.music = this.add.audio('game_audio');
+        // game.input.onDown.add(function() {
+        //     this.endTime = this.endTime + (1000 * 5);
+        //     console.log("Added 5 seconds");
+        // }, this);
+        this.music = this.add.audio('game_audio');
         this.music.play('', 0, 0.3, true);
         this.ouch = this.add.audio('hurt_audio');
         this.boom = this.add.audio('explosion_audio');
         this.ding = this.add.audio('select_audio');
+        this.pew = this.add.audio('pew_audio');
+        this.wee = this.add.audio('wee_audio');
 
   },
 
-
   update: function() {
-
     //  If the PLAYER is > 8px away from the pointer then let's move to it
       if (this.physics.arcade.distanceToPointer(this.player, this.game.input.activePointer) > 8)
       {
@@ -95,7 +90,8 @@ var gameState = {
         var timeLeft = this.endTime - game.time.now;
         if (timeLeft >= 0) {
             // show time remaining in seconds (divide by 1000)
-            game.debug.text(Math.ceil(timeLeft / 1000) + " seconds left!", 500, 100, "#00ff00");
+      game.debug.text(Math.ceil(timeLeft / 1000) + " seconds left!", 500, 100, "#00ff00");
+
         }
         else {
             game.debug.text("Ran out of time!", 500, 100, "#ff0000");
@@ -107,6 +103,8 @@ var gameState = {
     // this.player.rotation = this.game.physics.arcade.angleToPointer(this.lazer);
       if(this.PlayerAlive && this.fireButton.isDown) {
         this.fireLazers();
+        this.pew.play();
+
         }
     //     if (game.time.now > firingTimer)
     // {
@@ -209,6 +207,8 @@ var gameState = {
           var MIN_ENEMY_SPACING = 200;
           var MAX_ENEMY_SPACING = 3000;
           var ENEMY_SPEED = 200;
+          this.wee.play('', 0, 0.3);
+
          //  if( enemy ) {
          //    enemy.reset( Math.random() * game.world.width, 0 ); //set enemy to emerge from top border
          //    enemy.body.velocity.y = 10; //downward velocity

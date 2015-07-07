@@ -23,9 +23,9 @@ var preloadState = {
     this.game.load.audio('hurt_audio', 'audio/hurt.mp3');
     this.game.load.audio('select_audio', 'audio/select.mp3');
     this.game.load.audio('game_audio', 'audio/bgm.mp3');
-    // this.game.load.image('enemy', 'images/enemy-green.png');
-    // this.load.audio('collect', 'assets/audio/collect.ogg');
-    // this.load.audio('explosion', 'assets/audio/explosion.ogg');
+    this.game.load.audio('pew_audio', 'audio/pew.mp3');
+    this.game.load.audio('wee_audio', 'audio/wee.mp3');
+
   },
   create: function() {
     console.log( 'preload')
