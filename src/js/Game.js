@@ -6,6 +6,7 @@ var gameState = {
     this.setupPlayer();
     this.player;
     this.enemy;
+    this.enemyTwo;
     this.catTrail;
     this.setupButtons();
     this.setupLazers();
@@ -39,7 +40,7 @@ var gameState = {
       'Use mouse to Move, Press Spacebar to Fire\n' + 'Good Luck',
       { font: '28px Arial', fill: '#fff', align: 'center' });
       this.instructions.anchor.setTo(0.5, 0.5);
-      this.instExpire = this.time.now + 10000;
+      this.instExpire = this.time.now + 9000;
 
       // var style = { font: '34px Arial', fill: '#fff'};
       this.scoreText = this.game.add.text(60,10,"Score : "+this.score,this.fontStyle);
@@ -127,7 +128,6 @@ var gameState = {
         this.instructions.destroy();
         }
     },
-
       lazerHitsEnemy : function(lazer, enemy) {
         //  When a lzaer hits an enemy we kill them both
       if(this.enemies.getIndex(enemy) > -1)
@@ -145,7 +145,6 @@ var gameState = {
         // restart();
       },
 
-
     enemyHitPlayer : function(player, enemy){
       if(this.enemies.getIndex(enemy) > -1)
         this.enemies.remove(enemy);
@@ -158,6 +157,7 @@ var gameState = {
         explosion.reset(enemy.body.x, enemy.body.y);
         explosion.play('boom', 30, false, true);
         game.physics.arcade.overlap(this.player, this.enemies, this.enemyHitPlayer, null, this);
+
 
       if(this.lives < 0)
         this.game.state.start('GameOver');
@@ -207,7 +207,7 @@ var gameState = {
           var MIN_ENEMY_SPACING = 200;
           var MAX_ENEMY_SPACING = 3000;
           var ENEMY_SPEED = 200;
-          this.wee.play('', 0, 0.3);
+          this.wee.play('', 0, 0.3 );
 
          //  if( enemy ) {
          //    enemy.reset( Math.random() * game.world.width, 0 ); //set enemy to emerge from top border
@@ -230,37 +230,7 @@ var gameState = {
         }
     }
   },
-//     //  Send another enemy soon
-//     game.time.events.add(game.rnd.integerInRange(MIN_ENEMY_SPACING, MAX_ENEMY_SPACING), launchGreenEnemy);
-// }
-  //     setupScore: function() {
-  //       var score = 0;
-  //       var scoreString = '';
-  //       var scoreText;
-  //       var lives;
-  //       var stateText;
-  //       //  The score
-  //     scoreString = 'Score : ';
-  //    scoreText = game.add.text(10, 10, scoreString + score, { font: '34px Arial', fill: '#fff' });
-  //   //  Lives
-  //   lives = game.add.group();
-  //   game.add.text(game.world.width - 300, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
 
-  //   //  Text
-  //   stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
-  //   stateText.anchor.setTo(0.5, 0.5);
-  //   stateText.visible = false;
-
-  //   for (var i = 0; i < 3; i++)
-  //   {
-  //       var player = lives.create(game.world.width - 160 + (60 * i), 45, 'player');
-  //       player.scale.x = 0.2;
-  //       player.scale.y = 0.2;
-  //       player.anchor.setTo(0.5, 0.5);
-  // //      ship.angle = 90;
-  //       player.alpha = 0.6;
-  //   }
-  // },
 
       setupExplosions: function() {
         this.explosions = game.add.group();
@@ -302,13 +272,28 @@ var gameState = {
         this.enemies.setAll('anchor.y', 0.5);
         this.enemies.setAll('outOfBoundsKill', true);
         this.enemies.setAll('checkWorldBounds', true);
-        this.enemies.callAll('animations.add', 'animations', 'fly10', [0,1,2,3,4,5,6,7,8,8,8, 9], 6, true);
+        this.enemies.callAll('animations.add', 'animations', 'fly10', [0,1,2,3,4,5,6,7,8,8,8, 9, 11,12,13,14,15,16,17,18,18,18,19, 20, 21], 4, true);
         this.enemies.callAll('play', null, 'fly10');
-
         this.nextEnemyAt = 0;
-        this.enemyDelay = 1000;
+        this.enemyDelay = 500;
+
+        // this.enemiesTwo = game.add.group();
+        // this.enemiesTwo.enableBody = true;
+        // this.enemiesTwo.physicsBodyType = Phaser.Physics.ARCADE;
+        // this.enemiesTwo.scale.setTo(1.5);
+        // this.enemiesTwo.createMultiple(30, 'enemy');
+        // this.enemiesTwo.setAll('anchor.x', 0.5);
+        // this.enemiesTwo.setAll('anchor.y', 0.5);
+        // this.enemiesTwo.setAll('outOfBoundsKill', true);
+        // this.enemiesTwo.setAll('checkWorldBounds', true);
+        // this.enemiesTwo.callAll('animations.add', 'animations', 'lick10', [111,12,13,14,15,16,17,18,18,18,19, 20, 21], 6, true);
+        // this.enemiesTwo.callAll('play', null, 'lick10');
+        // this.nextEnemyTwoAt = this.time.now + 5000;
+        // this.EnemyDelay = 3000;
+        // game.time.events.add(1000);
 
       },
+
 
     //////////PLAYER!!!!///////
       setupPlayer: function() {

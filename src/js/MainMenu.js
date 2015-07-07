@@ -22,7 +22,7 @@ var mainMenuState = {
         radarLogoAnimation.loop( true );
         radarLogoAnimation.start();
 
-        var startText = this.game.add.text( game.world.width/2, game.world.height/1.5, "Press space to start", commonStyle );
+        var startText = this.game.add.text( game.world.width/2, game.world.height/1.5, "Press SPACEBAR to start", commonStyle );
         startText.anchor.setTo(0.5, 0.5);
     },
 
