@@ -16,6 +16,12 @@ module.exports = function(grunt) {
         src: 'public/css/main.css'
       }
     },
+    'gh-pages': {
+      options: {
+        base: 'public'
+      },
+        src: ['**/*']
+      },
     babel: {
       dev: {
         options: {
@@ -154,7 +160,7 @@ module.exports = function(grunt) {
     watch: {
       livereload: {
         options: {
-          livereload: true
+          livereload: getRandomInt(3000,65536)
         },
 
         files: [
