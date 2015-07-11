@@ -29,13 +29,11 @@ var preloadState = {
   },
   create: function() {
     console.log( 'preload')
-    // this.preloadBar.cropEnabled = false;
     game.time.events.add(Phaser.Timer.SECOND * 1, this.transition, this);
   },
   update: function () {
         if(this.cache.isSoundDecoded('game_audio') && this.ready == false) {
             this.ready = true;
-            // this.state.start('StartMenu');
         }
   },
   transition : function() {
@@ -43,11 +41,4 @@ var preloadState = {
     this.game.state.start('MainMenu');
   }
 };
-
-
-//   update: function () {
-//     this.ready = true;
-//     this.game.state.start('MainMenu');
-//   }
-// };
 

@@ -33,35 +33,26 @@ var gameState = {
 
     game.time.events.loop(Phaser.Timer.SECOND * 2, this.spawnEnemy, this);
     game.physics.startSystem(Phaser.Physics.ARCADE);
-
     game.time.advancedTiming = true;
-    this.fontStyle = { font: "40px Arial", fill: "#FFCC00", stroke: "#333", strokeThickness: 3, align: "center" };
-    this.instructions = this.add.text( 400, 500,
-      'Use mouse to Move, Press Spacebar to Fire\n' + 'Good Luck',
-      { font: '28px Arial', fill: '#fff', align: 'center' });
+
+    this.instructions = this.add.text( game.world.centerX, game.world.centerY,
+    'Use mouse to Move, Press Spacebar to Fire\n' + 'Good Luck, you have 9 lives and 30 seconds',
+    { font: "30px Arial", fill: "#ff0044", align: "center" });
       this.instructions.anchor.setTo(0.5, 0.5);
       this.instExpire = this.time.now + 9000;
 
-      // var style = { font: '34px Arial', fill: '#fff'};
+      this.fontStyle = { font: "40px Arial", fill: "#FFCC00", stroke: "#333", strokeThickness: 3, align: "center" };
       this.scoreText = this.game.add.text(60,10,"Score : "+this.score,this.fontStyle);
       this.livesText = this.game.add.text(game.world.width - 200, 10,"Lives : "+this.lives,this.fontStyle);
 
-
- // set the end time to 30 seconds in the future
-        this.endTime = game.time.now + (1000 * 30 );
-        // every time the user clicks, add 5 seconds to the end time
-        // game.input.onDown.add(function() {
-        //     this.endTime = this.endTime + (1000 * 5);
-        //     console.log("Added 5 seconds");
-        // }, this);
-        this.music = this.add.audio('game_audio');
-        this.music.play('', 0, 0.3, true);
-        this.ouch = this.add.audio('hurt_audio');
-        this.boom = this.add.audio('explosion_audio');
-        this.ding = this.add.audio('select_audio');
+      this.endTime = game.time.now + (1000 * 30 );
+      this.music = this.add.audio('game_audio');
+      this.music.play('', 0, 0.3, true);
+      this.ouch = this.add.audio('hurt_audio');
+      this.boom = this.add.audio('explosion_audio');
+      this.ding = this.add.audio('select_audio');
         this.pew = this.add.audio('pew_audio');
         this.wee = this.add.audio('wee_audio');
-
   },
 
   update: function() {
@@ -77,18 +68,8 @@ var gameState = {
         this.player.body.velocity.set(0);
         }
 
-      // //check for player commands
-      //   if( this.cursors.left.isDown ) {
-      //       if( this.player.angle > (-90) )
-      //           this.player.angle -= 0.5;
-      //   }
-      //   else if( this.cursors.right.isDown ){
-      //       if( this.player.angle < 90 )
-      //           this.player.angle += 0.5;
-      //   }
-// get time remaining in miliseconds
-        var style = { font: '34px Arial', align: 'center'};
-        var timeLeft = this.endTime - game.time.now;
+      var style = { font: '34px Arial', align: 'center'};
+      var timeLeft = this.endTime - game.time.now;
         if (timeLeft >= 0) {
             // show time remaining in seconds (divide by 1000)
       game.debug.text(Math.ceil(timeLeft / 1000) + " seconds left!", 500, 100, "#00ff00");
@@ -96,32 +77,15 @@ var gameState = {
         }
         else {
             game.debug.text("Ran out of time!", 500, 100, "#ff0000");
-             // this.music.stop();
             game.state.start('GameOver');
         }
 
-        ////////LAZERS////////////
-    // this.player.rotation = this.game.physics.arcade.angleToPointer(this.lazer);
       if(this.PlayerAlive && this.fireButton.isDown) {
         this.fireLazers();
         this.pew.play();
-
         }
-    //     if (game.time.now > firingTimer)
-    // {
-    //     enemyFires();
-    // }
-   //  function updateCounter() {
-   //  this.total++;
-   //  }
-   //  function render() {
-   // this. game.debug.text('Time until event: ' + timer.duration.toFixed(0), 32, 32);
-   //  this.game.debug.text('Loop Count: ' + total, 32, 64);
-
-   //  }
 
     game.physics.arcade.overlap( this.lazers, this.enemies, this.lazerHitsEnemy, null, this);
-    // this.game.physics.arcade.overlap( this.lazers, null, this);
       this.game.physics.arcade.collide(this.enemies, this.player, this.enemyHitPlayer,null, this);
       this.game.physics.arcade.collide(this.enemies, this.lazers, this.lazerHitsEnemy,null, this);
         if (this.instructions.exists && this.time.now > this.instExpire) {
@@ -129,20 +93,18 @@ var gameState = {
         }
     },
       lazerHitsEnemy : function(lazer, enemy) {
-        //  When a lzaer hits an enemy we kill them both
       if(this.enemies.getIndex(enemy) > -1)
         this.enemies.remove(enemy);
-      this.boom.play();
-      enemy.kill();
-      lazer.kill();
-      this.score += 10;
-      this.scoreText.setText("Score : "+this.score);
+        this.boom.play();
+        enemy.kill();
+        lazer.kill();
+        this.score += 10;
+        this.scoreText.setText("Score : "+this.score);
         //  And create an explosion
         var explosion = this.explosions.getFirstExists(false);
         explosion.reset(enemy.body.x, enemy.body.y);
         explosion.play('boom', 30, false, true);
-        // enemyBullets.callAll('kill',this);
-        // restart();
+
       },
 
     enemyHitPlayer : function(player, enemy){
@@ -161,21 +123,17 @@ var gameState = {
 
       if(this.lives < 0)
         this.game.state.start('GameOver');
-        // this.music.stop();
 
     },
 
-   fireLazers : function() {
+    fireLazers : function() {
         if( this.lazerTime == null )
             this.lazerTime = this.game.time.now;
 
-        //  To avoid them being allowed to fire too fast we set a time limit
         if ( this.game.time.now > this.lazerTime )
         {
-            //  Grab the first bullet we can from the pool
+
             var lazer = this.lazers.getFirstExists(false);
-            // if (lazer) {
-                //  And fire it
                 lazer.reset( this.player.x, this.player.y);
                 this.player.angle = this.player.angle;
                 lazer.body.velocity.y = Math.cos( this.player.angle * (Math.PI/180) ) * (-400);
@@ -192,15 +150,13 @@ var gameState = {
             this.scale.x += this.scaleSpeed;
             this.scale.y += this.scaleSpeed;
         }
-            // lazer.rotation = this.game.physics.arcade.moveToObject(lazer, this.player, 500);
-            // lazer.rotation = game.physics.arcade.moveToPointer(lazer, 1000, game.input.activePointer, 500);
             }
           },
 
           addToScore: function (score) {
-         this.score += score;
-        this.scoreText.text = this.score;
-         },
+          this.score += score;
+          this.scoreText.text = this.score;
+            },
 
         spawnEnemy: function() {
           var enemy = this.enemies.getFirstExists(false);
@@ -208,19 +164,12 @@ var gameState = {
           var MAX_ENEMY_SPACING = 1000;
           var ENEMY_SPEED = 200;
 
-
-         //  if( enemy ) {
-         //    enemy.reset( Math.random() * game.world.width, 0 ); //set enemy to emerge from top border
-         //    enemy.body.velocity.y = 10; //downward velocity
-         // }
          if (enemy) {
-        enemy.reset(game.rnd.integerInRange(0, game.width), -20);
-        enemy.body.velocity.x = game.rnd.integerInRange(-300, 300);
-        enemy.body.velocity.y = ENEMY_SPEED;
-        enemy.body.drag.x = 100;
-        this.wee.play('', 0, 0.3 );
-        // enemy.body.velocity.y = this.rnd.integerInRange(30, 60);
-        // enemy.play('fly');
+          enemy.reset(game.rnd.integerInRange(0, game.width), -20);
+          enemy.body.velocity.x = game.rnd.integerInRange(-300, 300);
+          enemy.body.velocity.y = ENEMY_SPEED;
+          enemy.body.drag.x = 100;
+          this.wee.play('', 0, 0.3 );
 
         enemy.update = function(){
           enemy.angle = 20 - game.math.radToDeg(Math.atan2(enemy.body.velocity.x, enemy.body.velocity.y));
@@ -231,7 +180,6 @@ var gameState = {
         }
     }
   },
-
 
       setupExplosions: function() {
         this.explosions = game.add.group();
@@ -262,7 +210,6 @@ var gameState = {
         this.lazers.scaleSpeed = 20;
       },
 
-
       setupEnemies: function() {
         this.enemies = game.add.group();
         this.enemies.enableBody = true;
@@ -277,24 +224,7 @@ var gameState = {
         this.enemies.callAll('play', null, 'fly10');
         this.enemyDelay = 200;
 
-        // this.enemiesTwo = game.add.group();
-        // this.enemiesTwo.enableBody = true;
-        // this.enemiesTwo.physicsBodyType = Phaser.Physics.ARCADE;
-        // this.enemiesTwo.scale.setTo(1.5);
-        // this.enemiesTwo.createMultiple(30, 'enemy');
-        // this.enemiesTwo.setAll('anchor.x', 0.5);
-        // this.enemiesTwo.setAll('anchor.y', 0.5);
-        // this.enemiesTwo.setAll('outOfBoundsKill', true);
-        // this.enemiesTwo.setAll('checkWorldBounds', true);
-        // this.enemiesTwo.callAll('animations.add', 'animations', 'lick10', [111,12,13,14,15,16,17,18,18,18,19, 20, 21], 6, true);
-        // this.enemiesTwo.callAll('play', null, 'lick10');
-        // this.nextEnemyTwoAt = this.time.now + 5000;
-        // this.EnemyDelay = 3000;
-        // game.time.events.add(1000);
-
       },
-
-
     //////////PLAYER!!!!///////
       setupPlayer: function() {
         this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
@@ -316,7 +246,6 @@ var gameState = {
         this.catTrail.setRotation(0,0);
         this.catTrail.setScale(0.15, 0.8, 0.15, 0.8, 2000, Phaser.Easing.Quintic.Out);
       },
-
 
   };
 

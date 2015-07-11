@@ -1,14 +1,11 @@
 var mainMenuState = {
     create: function() {
-        // Call the 'start' function when pressing the spacebar
         var space_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         space_key.onDown.add(this.start, this);
 
-        // Defining variables
         var gameTitleStyle = { font: "38px Arial", fill: "#00ff00" };
         var commonStyle = { font: "38px Arial", fill: "#00ff00" };
 
-        // Adding a text centered on the screen
         this.background = this.game.add.tileSprite(0,0, this.game.world.width, this.game.world.height, 'space');
         this.background.autoScroll(-60, -20);
         var gameTitle = this.game.add.text( game.world.width/2, game.world.height/4, "SPACE CATS", gameTitleStyle );
